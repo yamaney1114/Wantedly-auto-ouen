@@ -18,7 +18,7 @@
  */
 var tw_username = "XvolveWantedly";
 var tw_password = "wantedly";
-var wantedly_accounts = [
+var wantedly_accounts_ex = [
   {
     mail: "zhai_teng_ya_li_sha_ppfiyoz_zhai_teng_ya_li_sha@tfbnw.net",
     password: "xvolve123",
@@ -44,13 +44,14 @@ var wantedly_accounts = [
   //   password: "xvolve123",
   // },
 ];
-var project_list = [766193, 766195, 766196, 766200, 766200, 766194];
+var project_list_ex = [766193, 766195, 766196, 766200, 766200, 766194];
 
 /**
  * 以下は変更不要です。
  */
 // selenium の設定
 const fs = require("fs");
+const csv = require("csv-parser");
 const webdriver = require("selenium-webdriver");
 const { Builder, By, until, Key, Actions } = webdriver;
 const capabilities = webdriver.Capabilities.chrome();
@@ -66,6 +67,28 @@ capabilities.set("chromeOptions", {
 // awaitを使うので、asyncで囲む
 (async () => {
   try {
+    var wantedly_accounts = [];
+    fs.createReadStream("csv/acounts.csv")
+      .pipe(csv())
+      .on("data", function (row) {
+        const user = {
+          mail: row.mail,
+          password: row.password,
+        };
+        wantedly_accounts.push(user);
+      })
+      .on("end", function () {
+        console.table(wantedly_accounts);
+      });
+    var project_list = [];
+    fs.createReadStream("csv/pages.csv")
+      .pipe(csv())
+      .on("data", function (row) {
+        project_list.push(row.project_id);
+      })
+      .on("end", function () {
+        console.table(project_list);
+      });
     // ブラウザ立ち上げ
     const browser = await new Builder().withCapabilities(capabilities).build();
 
