@@ -135,13 +135,7 @@ capabilities.set("chromeOptions", {
             await browser
               .findElement(By.className("project-support-link"))
               .click();
-            await browser
-              .findElement(
-                By.xpath(
-                  "/html/body/div[4]/div[1]/div[3]/div/div[2]/div/div/div/div[2]/div/div/div[2]/div[3]/button[2]"
-                )
-              )
-              .click();
+            await browser.findElement(By.className("kNdZEB")).click();
             await browser.sleep(8000);
             await browser.get("https://www.wantedly.com/projects/" + project);
             count++;
