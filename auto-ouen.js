@@ -61,6 +61,7 @@ capabilities.set("chromeOptions", {
     "--no-sandbox",
     "--disable-gpu",
     `--window-size=1980,1200`,
+    "--disable-popup-blocking",
   ],
 });
 
@@ -93,19 +94,19 @@ capabilities.set("chromeOptions", {
     const browser = await new Builder().withCapabilities(capabilities).build();
 
     // login to twitter
-    await browser.get("https://twitter.com/i/flow/login");
-    let username = await browser.wait(
-      until.elementLocated(By.name("username")),
-      100000
-    );
-    await username.sendKeys(tw_username);
-    await username.sendKeys(Key.ENTER);
-    let pass = await browser.wait(
-      until.elementLocated(By.name("password")),
-      100000
-    );
-    await pass.sendKeys(tw_password);
-    await pass.sendKeys(Key.ENTER);
+    // await browser.get("https://twitter.com/i/flow/login");
+    // let username = await browser.wait(
+    //   until.elementLocated(By.name("username")),
+    //   100000
+    // );
+    // await username.sendKeys(tw_username);
+    // await username.sendKeys(Key.ENTER);
+    // let pass = await browser.wait(
+    //   until.elementLocated(By.name("password")),
+    //   100000
+    // );
+    // await pass.sendKeys(tw_password);
+    // await pass.sendKeys(Key.ENTER);
 
     // Wantedlyへアクセスしログインする
     let count = 0;
@@ -135,8 +136,20 @@ capabilities.set("chromeOptions", {
             await browser
               .findElement(By.className("project-support-link"))
               .click();
-            await browser.findElement(By.className("kNdZEB")).click();
+            const twitterButton = await browser.findElement(
+              By.className("kNdZEB")
+            );
+            const newTabClick = browser.actions();
+            newTabClick
+              .keyDown(Key.COMMAND)
+              .click(twitterButton)
+              .keyUp(Key.COMMAND)
+              .perform();
             await browser.sleep(8000);
+            const window = await browser.getAllWindowHandles();
+            await browser.switchTo().window(window[1]);
+            await browser.close();
+            await browser.switchTo().window(window[0]);
             await browser.get("https://www.wantedly.com/projects/" + project);
             count++;
           } catch (e) {
