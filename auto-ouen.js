@@ -18,33 +18,6 @@
  */
 var tw_username = "XvolveWantedly";
 var tw_password = "wantedly";
-var wantedly_accounts_ex = [
-  {
-    mail: "zhai_teng_ya_li_sha_ppfiyoz_zhai_teng_ya_li_sha@tfbnw.net",
-    password: "xvolve123",
-  },
-  {
-    mail: "kei.kishimoto0000@gmail.com",
-    password: "Xvolve123",
-  },
-  // {
-  //   mail: "apple_ncfruwr_female@tfbnw.net",
-  //   password: "xvolve123",
-  // },
-  // {
-  //   mail: "pei.40@docomo.ne.jp",
-  //   password: "xvolve123",
-  // },
-  // {
-  //   mail: "wafapya@na-cat.com",
-  //   password: "Xvolve123",
-  // },
-  // {
-  //   mail: "yoshidaakari_clugdcx_yoshidaakari@tfbnw.net",
-  //   password: "xvolve123",
-  // },
-];
-var project_list_ex = [766193, 766195, 766196, 766200, 766200, 766194];
 
 /**
  * 以下は変更不要です。
@@ -92,8 +65,8 @@ capabilities.set("chromeOptions", {
       });
     // ブラウザ立ち上げ
     const options = new chrome.Options()
-      .headless()
-      .windowSize({ width: 1280, height: 720 });
+      .windowSize({ width: 100, height: 500 })
+      .addArguments("--disable-gpu");
 
     const browser = await new Builder()
       .forBrowser("chrome")
@@ -170,6 +143,7 @@ capabilities.set("chromeOptions", {
         console.error(account, e);
       }
     }
+    await browser.quit();
   } catch (e) {
     console.error(e);
   }
