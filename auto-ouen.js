@@ -54,6 +54,7 @@ const fs = require("fs");
 const csv = require("csv-parser");
 const webdriver = require("selenium-webdriver");
 const { Builder, By, until, Key, Actions } = webdriver;
+const chrome = require("selenium-webdriver/chrome");
 const capabilities = webdriver.Capabilities.chrome();
 capabilities.set("chromeOptions", {
   args: [
@@ -61,7 +62,6 @@ capabilities.set("chromeOptions", {
     "--no-sandbox",
     "--disable-gpu",
     `--window-size=1980,1200`,
-    "--disable-popup-blocking",
   ],
 });
 
@@ -91,7 +91,14 @@ capabilities.set("chromeOptions", {
         console.table(project_list);
       });
     // ブラウザ立ち上げ
-    const browser = await new Builder().withCapabilities(capabilities).build();
+    const options = new chrome.Options()
+      .headless()
+      .windowSize({ width: 1280, height: 720 });
+
+    const browser = await new Builder()
+      .forBrowser("chrome")
+      .setChromeOptions(options)
+      .build();
 
     // login to twitter
     // await browser.get("https://twitter.com/i/flow/login");
@@ -126,6 +133,7 @@ capabilities.set("chromeOptions", {
           });
         let loginButton = await browser.findElement(By.id("next-step-button"));
         await loginButton.click();
+        console.log(account.mail, "login done");
 
         await browser.get("https://www.wantedly.com/projects");
         // 各募集要項へアクセスし応援する
@@ -146,10 +154,11 @@ capabilities.set("chromeOptions", {
               .keyUp(Key.COMMAND)
               .perform();
             await browser.sleep(8000);
-            const window = await browser.getAllWindowHandles();
-            await browser.switchTo().window(window[1]);
-            await browser.close();
-            await browser.switchTo().window(window[0]);
+            console.log(account.mail, project, "done");
+            // const window = await browser.getAllWindowHandles();
+            // await browser.switchTo().window(window[1]);
+            // await browser.close();
+            // await browser.switchTo().window(window[0]);
             await browser.get("https://www.wantedly.com/projects/" + project);
             count++;
           } catch (e) {
