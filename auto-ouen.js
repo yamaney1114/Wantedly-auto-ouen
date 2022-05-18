@@ -65,8 +65,10 @@ capabilities.set("chromeOptions", {
       });
     // ブラウザ立ち上げ
     const options = new chrome.Options()
-      .windowSize({ width: 100, height: 500 })
-      .addArguments("--disable-gpu");
+      .windowSize({ width: 1980, height: 1200 })
+      .addArguments("--disable-gpu")
+      .addArguments("--no-sandbox")
+      .addArguments("--headless");
 
     const browser = await new Builder()
       .forBrowser("chrome")
@@ -118,7 +120,7 @@ capabilities.set("chromeOptions", {
               .findElement(By.className("project-support-link"))
               .click();
             const twitterButton = await browser.findElement(
-              By.className("kNdZEB")
+              By.className("djeBxj")
             );
             const newTabClick = browser.actions();
             newTabClick
@@ -128,10 +130,10 @@ capabilities.set("chromeOptions", {
               .perform();
             await browser.sleep(8000);
             console.log(account.mail, project, "done");
-            // const window = await browser.getAllWindowHandles();
-            // await browser.switchTo().window(window[1]);
-            // await browser.close();
-            // await browser.switchTo().window(window[0]);
+            const window = await browser.getAllWindowHandles();
+            await browser.switchTo().window(window[1]);
+            await browser.close();
+            await browser.switchTo().window(window[0]);
             await browser.get("https://www.wantedly.com/projects/" + project);
             count++;
           } catch (e) {
