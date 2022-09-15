@@ -9,8 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "chromedriver": "^96.0.0",
+    "cli-progress": "^3.11.2",
+    "csv": "^6.2.0",
     "csv-parser": "^3.0.0",
+    "json-2-csv": "^3.17.1",
+    "moment": "^2.29.4",
     "selenium-webdriver": "^4.1.0"
   }
 }

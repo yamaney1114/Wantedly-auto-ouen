@@ -37,6 +37,10 @@ capabilities.set("chromeOptions", {
     `--window-size=1980,1200`,
   ],
 });
+const cliProgress = require("cli-progress");
+
+// create a new progress bar instance and use shades_classic theme
+const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
 // awaitを使うので、asyncで囲む
 (async () => {
@@ -58,11 +62,14 @@ capabilities.set("chromeOptions", {
     fs.createReadStream("csv/pages.csv")
       .pipe(csv())
       .on("data", function (row) {
-        project_list.push(row.project_id);
+        if (row.project_url) {
+          project_list.push(row.project_url);
+        }
       })
       .on("end", function () {
         console.table(project_list);
       });
+    bar.start(wantedly_accounts.length * project_list.length);
     // ブラウザ立ち上げ
     const options = new chrome.Options()
       .windowSize({ width: 1980, height: 1200 })
@@ -92,8 +99,8 @@ capabilities.set("chromeOptions", {
 
     // Wantedlyへアクセスしログインする
     let count = 0;
-    for (let index = 0; index < wantedly_accounts.length; index++) {
-      const account = wantedly_accounts[index];
+    for (let i = 0; i < wantedly_accounts.length; i++) {
+      const account = wantedly_accounts[i];
       try {
         await browser
           .get(
@@ -114,8 +121,11 @@ capabilities.set("chromeOptions", {
         // 各募集要項へアクセスし応援する
         for (let index = 0; index < project_list.length; index++) {
           const project = project_list[index];
+          if (!project) {
+            continue;
+          }
           try {
-            await browser.get("https://www.wantedly.com/projects/" + project);
+            await browser.get(project);
             await browser
               .findElement(By.className("project-support-link"))
               .click();
@@ -134,17 +144,19 @@ capabilities.set("chromeOptions", {
             await browser.switchTo().window(window[1]);
             await browser.close();
             await browser.switchTo().window(window[0]);
-            await browser.get("https://www.wantedly.com/projects/" + project);
+            await browser.get(project);
             count++;
           } catch (e) {
             console.error(account, e);
           }
+          bar.update(i * index);
         }
         await browser.get("https://www.wantedly.com/user/sign_out");
       } catch (e) {
         console.error(account, e);
       }
     }
+    bar.stop();
     await browser.quit();
   } catch (e) {
     console.error(e);
