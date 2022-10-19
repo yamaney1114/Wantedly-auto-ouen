@@ -39,39 +39,37 @@ capabilities.set("chromeOptions", {
 });
 const cliProgress = require("cli-progress");
 
-// create a new progress bar instance and use shades_classic theme
-const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-
 // awaitを使うので、asyncで囲む
 (async () => {
   try {
     var wantedly_accounts = [];
-    fs.createReadStream("csv/acounts.csv")
+    await fs
+      .createReadStream("csv/acounts.csv")
       .pipe(csv())
-      .on("data", function (row) {
+      .on("data", async function (row) {
         const user = {
           mail: row.mail,
           password: row.password,
         };
         wantedly_accounts.push(user);
       })
-      .on("end", function () {
-        console.table(wantedly_accounts);
+      .on("end", async function () {
+        await console.table(wantedly_accounts);
       });
     var project_list = [];
-    fs.createReadStream("csv/pages.csv")
+    await fs
+      .createReadStream("csv/pages.csv")
       .pipe(csv())
-      .on("data", function (row) {
+      .on("data", async function (row) {
         if (row.project_url) {
           project_list.push(row.project_url);
         }
       })
-      .on("end", function () {
-        console.table(project_list);
+      .on("end", async function () {
+        await console.table(project_list);
       });
-    bar.start(wantedly_accounts.length * project_list.length);
     // ブラウザ立ち上げ
-    const options = new chrome.Options()
+    const options = await new chrome.Options()
       .windowSize({ width: 1980, height: 1200 })
       .addArguments("--disable-gpu")
       .addArguments("--no-sandbox")
@@ -82,6 +80,12 @@ const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
       .setChromeOptions(options)
       .build();
 
+    // create a new progress bar instance and use shades_classic theme
+    const bar = await new cliProgress.SingleBar(
+      {},
+      cliProgress.Presets.shades_classic
+    );
+    await bar.start(wantedly_accounts.length * project_list.length, 0);
     // login to twitter
     // await browser.get("https://twitter.com/i/flow/login");
     // let username = await browser.wait(
@@ -115,7 +119,7 @@ const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
           });
         let loginButton = await browser.findElement(By.id("next-step-button"));
         await loginButton.click();
-        console.log(account.mail, "login done");
+        // console.log(account.mail, "login done");
 
         await browser.get("https://www.wantedly.com/projects");
         // 各募集要項へアクセスし応援する
@@ -139,7 +143,7 @@ const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
               .keyUp(Key.COMMAND)
               .perform();
             await browser.sleep(8000);
-            console.log(account.mail, project, "done");
+            // console.log(account.mail, project, "done");
             const window = await browser.getAllWindowHandles();
             await browser.switchTo().window(window[1]);
             await browser.close();
@@ -147,18 +151,24 @@ const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
             await browser.get(project);
             count++;
           } catch (e) {
-            console.error(account, e);
+            console.error(project);
+            console.error(account);
+            console.error(e);
           }
-          bar.update(i * index);
+          bar.increment();
         }
         await browser.get("https://www.wantedly.com/user/sign_out");
       } catch (e) {
-        console.error(account, e);
+        console.error(project);
+        console.error(account);
+        console.error(e);
       }
     }
     bar.stop();
     await browser.quit();
   } catch (e) {
+    console.error(project);
+    console.error(account);
     console.error(e);
   }
 })();

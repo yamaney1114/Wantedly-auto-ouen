@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
-    "chromedriver": "^96.0.0",
+    "chromedriver": "^105.0.1",
     "cli-progress": "^3.11.2",
     "csv": "^6.2.0",
     "csv-parser": "^3.0.0",
