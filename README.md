@@ -18,7 +18,8 @@ https://nodejs.org/en/download/
 ```
 $ git clone https://github.com/nao0515ki/Wantedly-auto-ouen.git
 $ cd Wantedly-auto-ouen
-$ npm install selenium-webdriver
+$ sudo npm install -g selenium-webdriver
+$ yarn install
 ```
 
 ### 2. CSVファイルを変更し、応援したい募集要項や自分のアカウントを設定してください。
