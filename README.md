@@ -47,7 +47,8 @@ $ node auto-ouen.js
 ### 4. セットアップ後、Chrome ブラウザを更新すると chromedriver の更新も必要になります。
 
 ```
-This version of ChromeDriver only supports Chrome version
+SessionNotCreatedError: session not created: This version of ChromeDriver only supports Chrome version 105
+Current browser version is 107.0.5304.87 with binary path /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 ```
 
 上記のようなエラーが出ている場合、chromedriver が古いバージョンです。
