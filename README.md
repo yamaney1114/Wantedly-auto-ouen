@@ -11,6 +11,8 @@ https://nodejs.org/en/download/
 
 また、Macで動作確認していますが、他で動くかは保証できません。
 
+Chromeが最新バージョンにアップデートされているかも確認して下さい
+
 ## 使い方
 
 ### 1. このリポジトリをクローンして、以下のコマンドでセットアップしてください。
@@ -18,12 +20,19 @@ https://nodejs.org/en/download/
 ```
 $ git clone https://github.com/nao0515ki/Wantedly-auto-ouen.git
 $ cd Wantedly-auto-ouen
-$ npm install selenium-webdriver
+$ sudo npm install -g selenium-webdriver
+$ sudo npm install -g chromedriver
+$ yarn install
 ```
+※$マークは不要
 
 ### 2. CSVファイルを変更し、応援したい募集要項や自分のアカウントを設定してください。
 
-応援したい募集要項は`pages.csv`に追加
+すでに記載してあるものは例なので消して大丈夫。一番上の行だけ消さないで。
+
+Facebookアカウントの場合はWantedlyの設定でパスワードを設定してからそのパスワードを登録しないとできない。
+
+応援したい募集要項は`pages.*`に追加
 
 応援したいアカウントは`accounts.csv`に追加
 
