@@ -1,21 +1,3 @@
-/**
- * Wantedlyの各募集要項枚に自動応援をします。
- * ＜使い方＞
- * 1.ユーザID,パスワードをセットし、プロジェクトIDをセットします。
- * 2.terminalで node auto-cheer.js と実行すると自動で応援します。
- * 途中に応援済みのページがある場合はエラーとなり停止します。
- * また、Facebookのアカウントには対応していません。
- */
-
-/**
- * 設定が必要な変数
- * ＜project_listについて＞
- * 応援したい募集要項が以下のように３つある場合は、
- * https://www.wantedly.com/projects/65498
- * https://www.wantedly.com/projects/64675
- * https://www.wantedly.com/projects/64678
- * project_list = [65498,64675,64678];と入れてください。
- */
 var tw_username = "XvolveWantedly";
 var tw_password = "wantedly";
 
@@ -167,8 +149,6 @@ const cliProgress = require("cli-progress");
     bar.stop();
     await browser.quit();
   } catch (e) {
-    console.error(project);
-    console.error(account);
     console.error(e);
   }
 })();
